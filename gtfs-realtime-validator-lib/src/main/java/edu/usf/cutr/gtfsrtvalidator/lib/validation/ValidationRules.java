@@ -56,6 +56,9 @@ public class ValidationRules {
     public static final ValidationRule W009 = new ValidationRule("W009", "WARNING", "schedule_relationship not populated",
             "trip.schedule_relationship and stop_time_update.schedule_relationship should be populated",
             "does not have a schedule_relationship");
+    public static final ValidationRule W103 = new ValidationRule("W103", "WARNING", "GTFS-RT version is neither 1.0 nor 2.0",
+            "GTFS-RT version is neither 1.0 nor 2.0",
+            "GTFS-RT version is neither 1.0 nor 2.0");
 
     /**
      * Errors

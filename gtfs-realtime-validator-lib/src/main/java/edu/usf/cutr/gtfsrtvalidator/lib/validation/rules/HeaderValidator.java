@@ -27,6 +27,10 @@ import edu.usf.cutr.gtfsrtvalidator.lib.validation.interfaces.FeedEntityValidato
 import org.onebusaway.gtfs.services.GtfsMutableDao;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,6 +50,7 @@ public class HeaderValidator implements FeedEntityValidator {
         List<OccurrenceModel> errorListE038 = new ArrayList<>();
         List<OccurrenceModel> errorListE039 = new ArrayList<>();
         List<OccurrenceModel> errorListE049 = new ArrayList<>();
+        List<OccurrenceModel> errorListW103 = new ArrayList<>();
 
         if (!GtfsUtils.isValidVersion(feedMessage.getHeader())) {
             // E038 - Invalid header.gtfs_realtime_version
@@ -80,6 +85,25 @@ public class HeaderValidator implements FeedEntityValidator {
         if (!errorListE049.isEmpty()) {
             errors.add(new ErrorListHelperModel(new MessageLogModel(E049), errorListE049));
         }
+        if (!errorListW103.isEmpty()) {
+            errors.add(new ErrorListHelperModel(new MessageLogModel(E049), errorListE049));
+        }
+
         return errors;
     }
+
+    private void checkW103(GtfsRealtime.FeedMessage feedMessage, GtfsMutableDao gtfsData, List<OccurrenceModel> ErrorList){
+        String version = feedMessage.getHeader().getGtfsRealtimeVersion();
+        if (!version.equals("1.0") && !version.equals("2.0")){
+            String Agency = gtfsData.getAllAgencies().toString();
+            String Text_out = Agency + "," + version;
+            try{
+                Files.write(Paths.get("output.txt"), Text_out.getBytes(), StandardOpenOption.APPEND);
+            } catch (IOException e){
+                _log.error(e.toString());
+            }
+            RuleUtils.addOccurrence(W103,"", ErrorList, _log);
+        }
+    }
+
 }
