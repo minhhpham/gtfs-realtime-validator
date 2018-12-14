@@ -24,6 +24,7 @@ import edu.usf.cutr.gtfsrtvalidator.lib.util.GtfsUtils;
 import edu.usf.cutr.gtfsrtvalidator.lib.util.RuleUtils;
 import edu.usf.cutr.gtfsrtvalidator.lib.validation.GtfsMetadata;
 import edu.usf.cutr.gtfsrtvalidator.lib.validation.interfaces.FeedEntityValidator;
+import org.onebusaway.gtfs.model.Agency;
 import org.onebusaway.gtfs.services.GtfsMutableDao;
 import org.slf4j.LoggerFactory;
 
@@ -75,6 +76,8 @@ public class HeaderValidator implements FeedEntityValidator {
             }
         }
 
+        checkW103(feedMessage, gtfsData, errorListW103);
+
         List<ErrorListHelperModel> errors = new ArrayList<>();
         if (!errorListE038.isEmpty()) {
             errors.add(new ErrorListHelperModel(new MessageLogModel(E038), errorListE038));
@@ -86,7 +89,7 @@ public class HeaderValidator implements FeedEntityValidator {
             errors.add(new ErrorListHelperModel(new MessageLogModel(E049), errorListE049));
         }
         if (!errorListW103.isEmpty()) {
-            errors.add(new ErrorListHelperModel(new MessageLogModel(E049), errorListE049));
+            errors.add(new ErrorListHelperModel(new MessageLogModel(W103), errorListE049));
         }
 
         return errors;
@@ -95,7 +98,7 @@ public class HeaderValidator implements FeedEntityValidator {
     private void checkW103(GtfsRealtime.FeedMessage feedMessage, GtfsMutableDao gtfsData, List<OccurrenceModel> ErrorList){
         String version = feedMessage.getHeader().getGtfsRealtimeVersion();
         if (!version.equals("1.0") && !version.equals("2.0")){
-            String Agency = gtfsData.getAllAgencies().toString();
+            String Agency = gtfsData.getAllAgencies().iterator().next().getName();
             String Text_out = Agency + "," + version;
             try{
                 Files.write(Paths.get("output.txt"), Text_out.getBytes(), StandardOpenOption.APPEND);
