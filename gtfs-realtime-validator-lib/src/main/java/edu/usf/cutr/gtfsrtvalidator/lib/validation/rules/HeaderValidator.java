@@ -52,6 +52,8 @@ public class HeaderValidator implements FeedEntityValidator {
         List<OccurrenceModel> errorListE039 = new ArrayList<>();
         List<OccurrenceModel> errorListE049 = new ArrayList<>();
         List<OccurrenceModel> errorListW103 = new ArrayList<>();
+		List<OccurrenceModel> errorListW103_1 = new ArrayList<>();
+		List<OccurrenceModel> errorListW103_2 = new ArrayList<>();
 
         if (!GtfsUtils.isValidVersion(feedMessage.getHeader())) {
             // E038 - Invalid header.gtfs_realtime_version
@@ -76,7 +78,7 @@ public class HeaderValidator implements FeedEntityValidator {
             }
         }
 
-        checkW103(feedMessage, gtfsData, errorListW103);
+        checkW103(feedMessage, gtfsData, errorListW103, errorListW103_1, errorListW103_2);
 
         List<ErrorListHelperModel> errors = new ArrayList<>();
         if (!errorListE038.isEmpty()) {
@@ -89,13 +91,19 @@ public class HeaderValidator implements FeedEntityValidator {
             errors.add(new ErrorListHelperModel(new MessageLogModel(E049), errorListE049));
         }
         if (!errorListW103.isEmpty()) {
-            errors.add(new ErrorListHelperModel(new MessageLogModel(W103), errorListE049));
+            errors.add(new ErrorListHelperModel(new MessageLogModel(W103), errorListW103));
+        }
+		if (!errorListW103_1.isEmpty()) {
+            errors.add(new ErrorListHelperModel(new MessageLogModel(W103_1), errorListW103_1));
+        }
+		if (!errorListW103_2.isEmpty()) {
+            errors.add(new ErrorListHelperModel(new MessageLogModel(W103_2), errorListW103_2));
         }
 
         return errors;
     }
 
-    private void checkW103(GtfsRealtime.FeedMessage feedMessage, GtfsMutableDao gtfsData, List<OccurrenceModel> ErrorList){
+    private void checkW103(GtfsRealtime.FeedMessage feedMessage, GtfsMutableDao gtfsData, List<OccurrenceModel> ErrorList, List<OccurrenceModel> ErrorList1, List<OccurrenceModel> ErrorList2){
         String version = feedMessage.getHeader().getGtfsRealtimeVersion();
         if (!version.equals("1.0") && !version.equals("2.0")){
             String Agency = gtfsData.getAllAgencies().iterator().next().getName();
@@ -106,7 +114,13 @@ public class HeaderValidator implements FeedEntityValidator {
                 _log.error(e.toString());
             }
             RuleUtils.addOccurrence(W103,"", ErrorList, _log);
-        }
+        } 
+		if (version.equals("1.0")){
+			RuleUtils.addOccurrence(W103_1,"", ErrorList1, _log);
+		}
+		if (version.equals("2.0")){
+			RuleUtils.addOccurrence(W103_2,"", ErrorList2, _log);
+		}
     }
 
 }

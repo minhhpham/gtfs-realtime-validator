@@ -59,6 +59,12 @@ public class ValidationRules {
     public static final ValidationRule W103 = new ValidationRule("W103", "WARNING", "GTFS-RT version is neither 1.0 nor 2.0",
             "GTFS-RT version is neither 1.0 nor 2.0",
             "GTFS-RT version is neither 1.0 nor 2.0");
+    public static final ValidationRule W103_1 = new ValidationRule("W103_1", "WARNING", "GTFS-RT version 1.0",
+            "GTFS-RT version 1.0",
+            "GTFS-RT version 1.0");
+    public static final ValidationRule W103_2 = new ValidationRule("W103_2", "WARNING", "GTFS-RT version is 2.0",
+            "GTFS-RT version is  2.0",
+            "GTFS-RT version is  2.0");			
 
     /**
      * Errors
